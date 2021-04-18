@@ -5,7 +5,7 @@ export default ({ comments }) => {
   const renderedComments = comments.map(comment => {
     
     let content;
-
+    console.log(comment)
     if (comment.status === 'approved') {
       content = comment.content;
     }
