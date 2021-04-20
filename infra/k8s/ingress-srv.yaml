@@ -1,0 +1,35 @@
+#note: networking.k8s.io/v1 is available with kubernetes v1.19+
+#Yaml structure is a little different if you are using that version
+#more details: https://kubernetes.io/docs/concepts/services-networking/ingress/
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  # this part tells ingress that we are going to feed some nginx routing rules
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # allows us to use regex for paths that use dynamic url parameters with regex
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  # tells ingress controller how to take traffic and feed them to pods
+  rules:
+    # here we are "tricking" our machine to hit localhost when accessing posts.com in dev
+    - host: posts.com
+      http:
+        paths:
+          - path: /posts/create
+            backend:
+              serviceName: posts-clusterip-srv
+              servicePort: 4000
+          - path: /posts
+            backend:
+              serviceName: query-clusterip-srv
+              servicePort: 4002
+          - path: /posts/?(.*)/comments
+            backend:
+              serviceName: comments-clusterip-srv
+              servicePort: 4001
+          - path: /?(.*)
+            backend:
+              serviceName: client-clusterip-srv
+              servicePort: 3000

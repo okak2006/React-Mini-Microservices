@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # name of deployment
+  name: event-bus-depl
+spec:
+  # number of pods to create
+  replicas: 1
+  # select which pods to manage. In this case all pods with label: event-bus
+  selector:
+    matchLabels:
+      app: event-bus
+  # information about the pod to create
+  template:
+    metadata:
+      # identifier of pod just like name. Make sure this matches selector
+      labels:
+        app: event-bus
+    # which container to put inside the pod. The :latest is optional. It looks for latest version in dockerhub.
+    spec:
+      containers:
+        - name: event-bus
+          image: okak2006/event-bus:latest
+---
+# Cluster IP: easy to use URL / Name to manage access to this pod. We make this whenever we want to make communication between pods
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-bus-srv
+spec:
+  # select which pod to expose
+  selector:
+    app: event-bus
+  type: ClusterIP
+  ports:
+    - name: event-bus
+      protocol: TCP
+      port: 4005
+      # this is the port that this service (app) is listening
+      targetPort: 4005
