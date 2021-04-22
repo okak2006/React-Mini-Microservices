@@ -1,0 +1,57 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    #starts skaffold, applies kubernetes config files whenever there is change, and removes objects when skaffold is stopped
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    #whenever skaffold rebuilds image it tries to push it to Docker Hub by default so disable that behavior
+    push: false
+  artifacts:
+    # image to rebuild on change
+    - image: okak2006/client
+      # this part tells skaffold that there is some pod running in client directory
+      # whenever there is change in directory, skaffold updates pods using instructions and files specified below
+      # note that your services still require something like nodemon to monitor changes
+      # without it skaffold will throw updated code to the pods but the actual app won't be restarted
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.js"
+            dest: .
+    - image: okak2006/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: okak2006/event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: okak2006/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.js"
+            dest: .
+    - image: okak2006/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.js"
+            dest: .

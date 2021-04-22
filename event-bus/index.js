@@ -4,6 +4,8 @@ const axios = require('axios');
 const app = express();
 app.use(express.json());
 
+const events = [];
+
 app.post('/events', (req, res) => {
   const event = req.body;
   console.log(req.body)

@@ -14,19 +14,15 @@ spec:
     spec:
       containers:
         - name: query
-          image: okak2006/query:latest
+          image: okak2006/query
 ---
-# Cluster IP: easy to use URL / Name to manage access to this pod
 apiVersion: v1
 kind: Service
 metadata:
-  # if you have multiple services for the same pod make sure a different name is given
   name: query-clusterip-srv
 spec:
-  # select which pod to expose
   selector:
     app: query
-  type: ClusterIP
   ports:
     - name: query
       protocol: TCP
