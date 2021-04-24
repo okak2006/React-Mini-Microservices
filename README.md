@@ -21,6 +21,7 @@
 - Install chocolatey: https://chocolatey.org/install
 - Install skaffold by running the following command from your terminal:
   `choco install -y skaffold`
+- Update your host file (C:/Windows/System32/Drivers/etc/hosts) and set up 127.0.0.1 to point to host specified in ingress-srv.yaml
 
 # Start App
 
